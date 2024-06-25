@@ -11,6 +11,11 @@
   gap:  10px;
 }
 
+.image_grid_block_wrapper.no-tall-image {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: repeat(1, 1fr);
+}
+
 .image_grid_block {
   position: relative;
 }
@@ -33,7 +38,7 @@
   width: 100%;
 }
 
-.image_grid_block.tall2 {
+.image_grid_block.tall-image {
   grid-row: span 2;
 }
 

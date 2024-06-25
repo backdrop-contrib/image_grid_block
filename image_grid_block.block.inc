@@ -40,7 +40,7 @@ class ImageGridBlock extends Block {
       'image_1' => '',
       'image_2' => '',
 		  'image_3' => '',
-      'height_1' => '',
+      'hightlighted_image' => '',
 		  'wrapper_classes' => 'image-grid-block-inner ' . $this->settings['machine_name'],
 		  'machine_name' => $this->settings['machine_name'],
 		);
@@ -59,40 +59,9 @@ class ImageGridBlock extends Block {
       $elements['content_3'] = check_markup($content_3, $block['format'], '', TRUE);
     }
 
-    if (!empty($block['height_1'])) {
-      if ($block['height_1'] == 'two') {
-        $imageclass_1 = "tall2";
-        $elements['imageclass_1'] = $imageclass_1;
-      }
-      $height_1 = token_replace($block['height_1']);
-      $elements['height_1'] = $height_1;
-    }
-
-    if (!empty($block['height_2'])) {
-      if ($block['height_2'] == 'two') {
-        $imageclass_2 = "tall2";
-        $elements['imageclass_2'] = $imageclass_2;
-      }
-      $height_2 = token_replace($block['height_2']);
-      $elements['height_2'] = $height_2;
-    }
-
-    if (!empty($block['height_3'])) {
-      if ($block['height_3'] == 'two') {
-        $imageclass_3 = "tall2";
-        $elements['imageclass_3'] = $imageclass_3;
-      }
-      $height_3 = token_replace($block['height_3']);
-      $elements['height_3'] = $height_3;
-    }
-
-    if (!empty($block['height_1'])) {
-      if ($block['height_1'] == 'two') {
-        $imageclass_1 = "tall2";
-        $elements['imageclass_1'] = $imageclass_1;
-      }
-      $height_1 = token_replace($block['height_1']);
-      $elements['height_1'] = $height_1;
+    if (!empty($block['highlighted_image'])) {
+      $highlighted_image = token_replace($block['highlighted_image']);
+      $elements['highlighted_image'] = $highlighted_image;
     }
 
     if (!empty($block['image_1'])) {
@@ -252,22 +221,6 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['one']['height_1'] = array(
-      '#title' => t('Height'),
-      '#type' => 'fieldset',
-      '#description' => 'How many rows high should this image be.'
-    );
-
-    $form['one']['height_1']['height_type'] = array(
-      '#type' => 'select',
-      '#options' => array(
-        'one' => 'One',
-        'two' => 'Two',
-        'three' => 'Three',
-      ),
-      '#default_value' => isset($block['height_1']) ? $block['height_1'] : '',
-    );
-
     $form['one']['content_1'] = array(
       '#type' => 'text_format',
       '#title' => t('Block content'),
@@ -305,22 +258,6 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['two']['height_2'] = array(
-      '#title' => t('Height'),
-      '#type' => 'fieldset',
-      '#description' => 'How many rows high should this image be.'
-    );
-
-    $form['two']['height_2']['height_type'] = array(
-      '#type' => 'select',
-      '#options' => array(
-        'one' => 'One',
-        'two' => 'Two',
-        'three' => 'Three',
-      ),
-      '#default_value' => isset($block['height_2']) ? $block['height_2'] : '',
-    );
-
     $form['two']['content_2'] = array( 
       '#type' => 'text_format',
       '#title' => t('Block content'),
@@ -347,22 +284,6 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['three']['height_3'] = array(
-      '#title' => t('Height'),
-      '#type' => 'fieldset',
-      '#description' => 'How many rows high should this image be.'
-    );
-
-    $form['three']['height_3']['height_type'] = array(
-      '#type' => 'select',
-      '#options' => array(
-        'one' => 'One',
-        'two' => 'Two',
-        'three' => 'Three',
-      ),
-      '#default_value' => isset($block['height_3']) ? $block['height_3'] : '',
-    );
-
     $form['three']['content_3'] = array( 
       '#type' => 'text_format',
       '#title' => t('Block content'),
@@ -370,6 +291,23 @@ class ImageGridBlock extends Block {
       '#format' => isset($block['format']) ? $block['format'] : NULL,
       '#editor_uploads' => TRUE,
       '#rows' => 5,
+    );
+
+    $form['highlighted_image'] = array(
+      '#title' => t('Hightlighted Image'),
+      '#type' => 'fieldset',
+      '#description' => 'Which image should be bigger.'
+    );
+
+    $form['highlighted_image']['highlighted_image_type'] = array(
+      '#type' => 'select',
+      '#options' => array(
+        'none' => 'None - single row of 3 images',
+        'one' => 'Image 1',
+        'two' => 'Image 2',
+        'three' => 'Image 3',
+      ),
+      '#default_value' => isset($block['highlighted_image']) ? $block['highlighted_image'] : '',
     );
 
     // Additional image settings and attributes.
@@ -413,10 +351,6 @@ class ImageGridBlock extends Block {
     $this->settings['label'] = $form_state['values']['label'];
     $this->settings['machine_name'] = $form_state['values']['machine_name'];
 
-    backdrop_set_message('starting form submit process');
-
-    
-
     // Additional content goes to a different config.
     $block = array();
     $block['parent'] = $this->delta;
@@ -427,9 +361,8 @@ class ImageGridBlock extends Block {
     $block['content_2'] = $form_state['values']['two']['content_2']['value'];
     $block['content_3'] = $form_state['values']['three']['content_3']['value'];
     $block['format'] = $form_state['values']['one']['content_1']['format'];
-    $block['height_1'] = $form_state['values']['one']['height_1']['height_type'];
-    $block['height_2'] = $form_state['values']['two']['height_2']['height_type'];
-    $block['height_3'] = $form_state['values']['three']['height_3']['height_type'];
+    $block['highlighted_image'] = $form_state['values']['highlighted_image']['highlighted_image_type'];
+
 
     // Image 1
 
