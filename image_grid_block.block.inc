@@ -201,14 +201,14 @@ class ImageGridBlock extends Block {
       $upload_location .= $config['image_grid_block_image_path'];
     }
 
-    // $form['one'] = array(
-    //   '#type' => 'fieldset',
-    //   '#title' => t('Image 1'),
-    //   '#collapsible' => TRUE,
-    //   '#collapsed' => TRUE,
-    // );
+    $form['one'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Image 1'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
 
-    $form['image_1'] = array( 
+    $form['one']['image_1'] = array( 
       '#type' => 'managed_file',
       '#title' => t('Image 1'),
       '#description' => $upload_description,
@@ -218,7 +218,7 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['content_1'] = array(
+    $form['one']['content_1'] = array(
       '#type' => 'text_format',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_1']) ? $block['content_1'] : '',
@@ -238,15 +238,14 @@ class ImageGridBlock extends Block {
       '#weight' => -1,
     );
 
+    $form['two'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Image 2'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
 
-    // $form['two'] = array(
-    //   '#type' => 'fieldset',
-    //   '#title' => t('Image 2'),
-    //   '#collapsible' => TRUE,
-    //   '#collapsed' => TRUE,
-    // );
-
-    $form['image_2'] = array( 
+    $form['two']['image_2'] = array( 
       '#type' => 'managed_file',
       '#title' => t('Image 2'),
       '#description' => $upload_description,
@@ -256,7 +255,7 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['content_2'] = array( 
+    $form['two']['content_2'] = array( 
       '#type' => 'text_format',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_2']) ? $block['content_2'] : '',
@@ -265,14 +264,14 @@ class ImageGridBlock extends Block {
       '#rows' => 5,
     );
 
-    // $form['three'] = array(
-    //   '#type' => 'fieldset',
-    //   '#title' => t('Image 3'),
-    //   '#collapsible' => TRUE,
-    //   '#collapsed' => TRUE,
-    // );
+    $form['three'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Image 3'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
 
-    $form['image_3'] = array( 
+    $form['three']['image_3'] = array( 
       '#type' => 'managed_file',
       '#title' => t('Image 3'),
       '#description' => $upload_description,
@@ -282,7 +281,7 @@ class ImageGridBlock extends Block {
       '#browser_view' => 'image_library',
     );
 
-    $form['content_3'] = array( 
+    $form['three']['content_3'] = array( 
       '#type' => 'text_format',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_3']) ? $block['content_3'] : '',
@@ -310,7 +309,6 @@ class ImageGridBlock extends Block {
         '#default_value' => isset($block['image_style']) ? $block['image_style'] : '',
       );
     }
-
   }
 
   /**
@@ -320,7 +318,7 @@ class ImageGridBlock extends Block {
     parent::formValidate($form, $form_state);
 
     // Check that one of title, text, or image, is provided.
-    if (empty($form_state['values']['image_1']) && empty($form_state['values']['image_2']) && empty($form_state['values']['image_3']) && empty($form_state['values']['title']) && empty($form_state['values']['content_1']['value']) && empty($form_state['values']['content_2']['value']) && empty($form_state['values']['content_3']['value'])) {
+    if (empty($form_state['values']['image_1']) && empty($form_state['values']['two']['image_2']) && empty($form_state['values']['three']['image_3']) && empty($form_state['values']['title']) && empty($form_state['values']['content_1']['value']) && empty($form_state['values']['two']['content_2']['value']) && empty($form_state['values']['three']['content_3']['value'])) {
       form_error($form['image'], t('Three images, a Display title, and Block content must be provided.'));
     }
   }
@@ -339,23 +337,23 @@ class ImageGridBlock extends Block {
     $block['label'] = $form_state['values']['label'];
     $block['machine_name'] = $form_state['values']['machine_name'];
     $block['title'] = $form_state['values']['title'];
-    $block['content_1'] = $form_state['values']['content_1']['value'];
-    $block['content_2'] = $form_state['values']['content_2']['value'];
-    $block['content_3'] = $form_state['values']['content_3']['value'];
-    $block['format'] = $form_state['values']['content_1']['format'];
+    $block['content_1'] = $form_state['values']['one']['content_1']['value'];
+    $block['content_2'] = $form_state['values']['two']['content_2']['value'];
+    $block['content_3'] = $form_state['values']['three']['content_3']['value'];
+    $block['format'] = $form_state['values']['one']['content_1']['format'];
 
     // Image 1
 
-    if (!empty($form_state['values']['image_1'])) {
-      $current_file = file_load($form_state['values']['image_1']);
+    if (!empty($form_state['values']['one']['image_1'])) {
+      $current_file = file_load($form_state['values']['one']['image_1']);
       if (!$this->is_new) {
         // Edit an existing block.
-        if ($form_state['values']['image_1'] != $form['image_1']['#default_value']) {
+        if ($form_state['values']['one']['image_1'] != $form['one']['image_1']['#default_value']) {
           // Set file usage on new file, also marks permanent.
           file_usage_add($current_file, 'image_grid_block', 'block', $current_file->fid);
-          if (!empty($form['image_1']['#default_value'])) {
+          if (!empty($form['one']['image_1']['#default_value'])) {
             // Remove usage from old (replaced) file.
-            $old_file = file_load($form['image_1']['#default_value']);
+            $old_file = file_load($form['one']['image_1']['#default_value']);
             if ($old_file) {
               file_usage_delete($old_file, 'image_grid_block');
             }
@@ -368,28 +366,28 @@ class ImageGridBlock extends Block {
       }
     }
     else {
-      if (!empty($form['image_1']['#default_value'])) {
+      if (!empty($form['one']['image_1']['#default_value'])) {
         // Old image was removed, no new one added.
-        $old_file = file_load($form['image_1']['#default_value']);
+        $old_file = file_load($form['one']['image_1']['#default_value']);
         if ($old_file) {
           file_usage_delete($old_file, 'image_grid_block');
         }
       }
     }
-    $block['image_1'] = $form_state['values']['image_1'];
+    $block['image_1'] = $form_state['values']['one']['image_1'];
 
     // Image 2
 
-    if (!empty($form_state['values']['image_2'])) {
-      $current_file = file_load($form_state['values']['image_2']);
+    if (!empty($form_state['values']['two']['image_2'])) {
+      $current_file = file_load($form_state['values']['two']['image_2']);
       if (!$this->is_new) {
         // Edit an existing block.
-        if ($form_state['values']['image_2'] != $form['image_2']['#default_value']) {
+        if ($form_state['values']['two']['image_2'] != $form['two']['image_2']['#default_value']) {
           // Set file usage on new file, also marks permanent.
           file_usage_add($current_file, 'image_grid_block', 'block', $current_file->fid);
-          if (!empty($form['image_2']['#default_value'])) {
+          if (!empty($form['two']['image_2']['#default_value'])) {
             // Remove usage from old (replaced) file.
-            $old_file = file_load($form['image_2']['#default_value']);
+            $old_file = file_load($form['two']['image_2']['#default_value']);
             if ($old_file) {
               file_usage_delete($old_file, 'image_grid_block');
             }
@@ -402,28 +400,28 @@ class ImageGridBlock extends Block {
       }
     }
     else {
-      if (!empty($form['image_2']['#default_value'])) {
+      if (!empty($form['two']['image_2']['#default_value'])) {
         // Old image was removed, no new one added.
-        $old_file = file_load($form['image_2']['#default_value']);
+        $old_file = file_load($form['two']['image_2']['#default_value']);
         if ($old_file) {
           file_usage_delete($old_file, 'image_grid_block');
         }
       }
     }
-    $block['image_2'] = $form_state['values']['image_2'];
+    $block['image_2'] = $form_state['values']['two']['image_2'];
 
     // Image 3
 
-    if (!empty($form_state['values']['image_3'])) {
-      $current_file = file_load($form_state['values']['image_3']);
+    if (!empty($form_state['values']['three']['image_3'])) {
+      $current_file = file_load($form_state['values']['three']['image_3']);
       if (!$this->is_new) {
         // Edit an existing block.
-        if ($form_state['values']['image_3'] != $form['image_3']['#default_value']) {
+        if ($form_state['values']['three']['image_3'] != $form['three']['image_3']['#default_value']) {
           // Set file usage on new file, also marks permanent.
           file_usage_add($current_file, 'image_grid_block', 'block', $current_file->fid);
-          if (!empty($form['image_3']['#default_value'])) {
+          if (!empty($form['three']['image_3']['#default_value'])) {
             // Remove usage from old (replaced) file.
-            $old_file = file_load($form['image_3']['#default_value']);
+            $old_file = file_load($form['three']['image_3']['#default_value']);
             if ($old_file) {
               file_usage_delete($old_file, 'image_grid_block');
             }
@@ -436,15 +434,15 @@ class ImageGridBlock extends Block {
       }
     }
     else {
-      if (!empty($form['image_3']['#default_value'])) {
+      if (!empty($form['three']['image_3']['#default_value'])) {
         // Old image was removed, no new one added.
-        $old_file = file_load($form['image_3']['#default_value']);
+        $old_file = file_load($form['three']['image_3']['#default_value']);
         if ($old_file) {
           file_usage_delete($old_file, 'image_grid_block');
         }
       }
     }
-    $block['image_3'] = $form_state['values']['image_3'];
+    $block['image_3'] = $form_state['values']['three']['image_3'];
 
     // Extended attributes.
 
