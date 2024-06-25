@@ -12,9 +12,13 @@
  *
  * @see template_preprocess_block()
  */
+
+  dpm($variables);
 ?>
+
+
 <div class="image_grid_block_wrapper <?php print $wrapper_classes;?>">
-  <div class="image_grid_block image-one item">
+  <div class="image_grid_block image-one item <?php print $imageclass_1;?>">
     <?php print $image_1 ?>
     <div class="image-overlay">
       <span class="text-container">
@@ -22,7 +26,7 @@
       </span>
     </div>
   </div>
-  <div class="image_grid_block image-two item">
+  <div class="image_grid_block image-two item <?php print $imageclass_2;?>">
     <?php print $image_2 ?>
     <div class="image-overlay">
       <span class="text-container">
@@ -30,7 +34,7 @@
       </span>
     </div>
   </div>
-  <div class="image_grid_block image-three item">
+  <div class="image_grid_block image-three item <?php print $imageclass_3;?>">
     <?php print $image_3 ?>
     <div class="image-overlay">
       <span class="text-container">

@@ -95,7 +95,7 @@ function image_grid_block_block_info() {
     'description' => $default_info,
     'class' => 'ImageGridBlock',
   );
-  // IIV Blocks are reusable.
+  // Image Grid Blocks are reusable.
   $config_names = config_get_names_with_prefix('image_grid_block.block.');
   foreach ($config_names as $config_name) {
     $block = config_get($config_name);
@@ -109,7 +109,7 @@ function image_grid_block_block_info() {
 }
 
 /**
- * Load a single IIV Block by its machine name.
+ * Load a single Image Grid Block by its machine name.
  *
  * Helper function for #machine_name form item.
  */

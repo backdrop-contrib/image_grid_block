@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-.image_grid_block.image-one {
+.image_grid_block.tall2 {
   grid-row: span 2;
 }
 
