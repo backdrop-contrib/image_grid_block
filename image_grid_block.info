@@ -1,0 +1,11 @@
+name = Image Grid Block
+description = A flexible block for images with captions
+type = module
+backdrop = 1.x
+
+stylesheets[all][] = css/image_grid_block.css
+
+scripts[] = js/image_grid_block.js
+
+configure = admin/structure/image_grid_block/image_grid_block_configure
+
