@@ -12,6 +12,7 @@
  *
  * @see template_preprocess_block()
  */
+
 ?>
 
 <?php if ($highlighted_image == 'none') { ?>

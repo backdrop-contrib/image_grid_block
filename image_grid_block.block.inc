@@ -303,9 +303,9 @@ class ImageGridBlock extends Block {
       '#type' => 'select',
       '#options' => array(
         'none' => 'None - single row of 3 images',
-        'one' => 'Image 1',
-        'two' => 'Image 2',
-        'three' => 'Image 3',
+        'one' => 'Image 1 (left side)',
+        'two' => 'Image 2 (left side)',
+        'three' => 'Image 3 (right side)',
       ),
       '#default_value' => isset($block['highlighted_image']) ? $block['highlighted_image'] : '',
     );
