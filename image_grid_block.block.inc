@@ -40,6 +40,9 @@ class ImageGridBlock extends Block {
       'image_1' => '',
       'image_2' => '',
 		  'image_3' => '',
+      'link_1' => '',
+      'link_2' => '',
+      'link_3' => '',
       'hightlighted_image' => '',
 		  'wrapper_classes' => 'image-grid-block-inner ' . $this->settings['machine_name'],
 		  'machine_name' => $this->settings['machine_name'],
@@ -57,6 +60,10 @@ class ImageGridBlock extends Block {
     if (!empty($block['content_3'])) {
       $content_3 = token_replace($block['content_3']);
       $elements['content_3'] = check_markup($content_3, $block['format'], '', TRUE);
+    }
+
+    if (!empty($block['link_1'])) {
+      $link_1 = token_replace($block['link_1']);
     }
 
     if (!empty($block['highlighted_image'])) {
@@ -82,6 +89,18 @@ class ImageGridBlock extends Block {
         );
       }
       $markup = '<img src="' . $elements['img_url'] . '">';
+      if (!empty($block['link_1'])) {
+        if (valid_url($block['link_1']) || valid_url($block['link_1'], TRUE)) {
+          $href = $block['link_1'];
+        }
+        elseif (preg_match('/.+ \[(\d+)\]$/', $block['link_1'], $matches)) {
+          // Get alias from nid if input came via autocomplete.
+          $href = url('node/' . $matches[1]);
+        }
+        $attributes = array();
+        $attributes['href'] = $href;
+        $markup = '<a' . backdrop_attributes($attributes) . '>' . $markup . '</a>';
+      }
       $elements['image_1'] = $markup;
     }
 
@@ -102,7 +121,19 @@ class ImageGridBlock extends Block {
           'attributes' => array(),
         );
       }
-      $markup = '<img src="' . $elements['img_url'] . '">';
+      $markup = '<img class="cover" src="' . $elements['img_url'] . '">';
+      if (!empty($block['link_2'])) {
+        if (valid_url($block['link_2']) || valid_url($block['link_2'], TRUE)) {
+          $href = $block['link_2'];
+        }
+        elseif (preg_match('/.+ \[(\d+)\]$/', $block['link_2'], $matches)) {
+          // Get alias from nid if input came via autocomplete.
+          $href = url('node/' . $matches[1]);
+        }
+        $attributes = array();
+        $attributes['href'] = $href;
+        $markup = '<a' . backdrop_attributes($attributes) . '>' . $markup . '</a>';
+      }
       $elements['image_2'] = $markup;
     }
 
@@ -124,6 +155,18 @@ class ImageGridBlock extends Block {
         );
       }
       $markup = '<img src="' . $elements['img_url'] . '">';
+      if (!empty($block['link_3'])) {
+        if (valid_url($block['link_3']) || valid_url($block['link_3'], TRUE)) {
+          $href = $block['link_3'];
+        }
+        elseif (preg_match('/.+ \[(\d+)\]$/', $block['link_3'], $matches)) {
+          // Get alias from nid if input came via autocomplete.
+          $href = url('node/' . $matches[1]);
+        }
+        $attributes = array();
+        $attributes['href'] = $href;
+        $markup = '<a' . backdrop_attributes($attributes) . '>' . $markup . '</a>';
+      }
       $elements['image_3'] = $markup;
     }
 
@@ -222,12 +265,18 @@ class ImageGridBlock extends Block {
     );
 
     $form['one']['content_1'] = array(
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_1']) ? $block['content_1'] : '',
-      '#format' => isset($block['format']) ? $block['format'] : NULL,
-      '#editor_uploads' => TRUE,
-      '#rows' => 5,
+      '#rows' => 1,
+    );
+
+    $form['one']['link_1'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Link'),
+      '#description' => t('Leave empty for no link. Start typing to get suggestions, or paste a full url.'),
+      '#default_value' => isset($block['link_1']) ? $block['link_1'] : '',
+      '#autocomplete_path' => 'node/autocomplete',
     );
 
     $form['label'] = array(
@@ -259,12 +308,18 @@ class ImageGridBlock extends Block {
     );
 
     $form['two']['content_2'] = array( 
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_2']) ? $block['content_2'] : '',
-      '#format' => isset($block['format']) ? $block['format'] : NULL,
-      '#editor_uploads' => TRUE,
-      '#rows' => 5,
+      '#rows' => 1,
+    );
+
+    $form['two']['link_2'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Link'),
+      '#description' => t('Leave empty for no link. Start typing to get suggestions, or paste a full url.'),
+      '#default_value' => isset($block['link_2']) ? $block['link_2'] : '',
+      '#autocomplete_path' => 'node/autocomplete',
     );
 
     $form['three'] = array(
@@ -285,12 +340,18 @@ class ImageGridBlock extends Block {
     );
 
     $form['three']['content_3'] = array( 
-      '#type' => 'text_format',
+      '#type' => 'textarea',
       '#title' => t('Block content'),
       '#default_value' => isset($block['content_3']) ? $block['content_3'] : '',
-      '#format' => isset($block['format']) ? $block['format'] : NULL,
-      '#editor_uploads' => TRUE,
-      '#rows' => 5,
+      '#rows' => 1,
+    );
+
+    $form['three']['link_3'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Link'),
+      '#description' => t('Leave empty for no link. Start typing to get suggestions, or paste a full url.'),
+      '#default_value' => isset($block['link_3']) ? $block['link_3'] : '',
+      '#autocomplete_path' => 'node/autocomplete',
     );
 
     $form['highlighted_image'] = array(
@@ -351,16 +412,21 @@ class ImageGridBlock extends Block {
     $this->settings['label'] = $form_state['values']['label'];
     $this->settings['machine_name'] = $form_state['values']['machine_name'];
 
+
+    // dpm($form_state);
+
     // Additional content goes to a different config.
     $block = array();
     $block['parent'] = $this->delta;
     $block['label'] = $form_state['values']['label'];
     $block['machine_name'] = $form_state['values']['machine_name'];
     $block['title'] = $form_state['values']['title'];
-    $block['content_1'] = $form_state['values']['one']['content_1']['value'];
-    $block['content_2'] = $form_state['values']['two']['content_2']['value'];
-    $block['content_3'] = $form_state['values']['three']['content_3']['value'];
-    $block['format'] = $form_state['values']['one']['content_1']['format'];
+    $block['content_1'] = $form_state['values']['one']['content_1'];
+    $block['content_2'] = $form_state['values']['two']['content_2'];
+    $block['content_3'] = $form_state['values']['three']['content_3'];
+    $block['link_1'] = $form_state['values']['one']['link_1'];
+    $block['link_2'] = $form_state['values']['two']['link_2'];
+    $block['link_3'] = $form_state['values']['three']['link_3'];
     $block['highlighted_image'] = $form_state['values']['highlighted_image']['highlighted_image_type'];
 
 
