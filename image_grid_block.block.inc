@@ -43,23 +43,25 @@ class ImageGridBlock extends Block {
       'link_1' => '',
       'link_2' => '',
       'link_3' => '',
+      'img_url' => '',
       'hightlighted_image' => '',
 		  'wrapper_classes' => 'image-grid-block-inner ' . $this->settings['machine_name'],
 		  'machine_name' => $this->settings['machine_name'],
 		);
     $block = config_get('image_grid_block.block.' . $this->settings['machine_name']);
+    $format = 'plain_text';
 
     if (!empty($block['content_1'])) {
       $content_1 = token_replace($block['content_1']);
-      $elements['content_1'] = check_markup($content_1, $block['format'], '', TRUE);
+      $elements['content_1'] = check_markup($content_1, $format, '', TRUE);
     }
     if (!empty($block['content_2'])) {
       $content_2 = token_replace($block['content_2']);
-      $elements['content_2'] = check_markup($content_2, $block['format'], '', TRUE);
+      $elements['content_2'] = check_markup($content_2, $format, '', TRUE);
     }
     if (!empty($block['content_3'])) {
       $content_3 = token_replace($block['content_3']);
-      $elements['content_3'] = check_markup($content_3, $block['format'], '', TRUE);
+      $elements['content_3'] = check_markup($content_3, $format, '', TRUE);
     }
 
     if (!empty($block['link_1'])) {
